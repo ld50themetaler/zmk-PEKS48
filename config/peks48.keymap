@@ -4,62 +4,63 @@
 #include <behaviors.dtsi>
 #include <dt-bindings/zmk/bt.h>
 #include <dt-bindings/zmk/keys.h>
-#include <dt-bindings/zmk/pointing.h>
 
 / {
-
     behaviors {
-    mt: mod_tap {
-        compatible = "zmk,behavior-hold-tap";
-        #binding-cells = <2>;
+        mt: mod_tap {
+            compatible = "zmk,behavior-hold-tap";
+            #binding-cells = <2>;
 
-        // --- ここからがカスタマイズ項目です ---
-        // タップとホールドを認識する時間。200msに設定。
+            // --- ここからがカスタマイズ項目です ---
+            // タップとホールドを認識する時間。200msに設定。
 
-        tapping-term-ms = <200>;
+            tapping-term-ms = <200>;
 
-        // 'tap-preferred'フレーバーを選択。
-        // これにより、高速でキーを連続入力（ローリング）した際に、
-        // ホールド（モディファイア）が誤爆するのを防ぎます。
-        // QMKの`IGNORE_MOD_TAP_INTERRUPT`に近い挙動です。
+            // 'tap-preferred'フレーバーを選択。
+            // これにより、高速でキーを連続入力（ローリング）した際に、
+            // ホールド（モディファイア）が誤爆するのを防ぎます。
+            // QMKの`IGNORE_MOD_TAP_INTERRUPT`に近い挙動です。
 
-        flavor = "tap-preferred";
+            flavor = "tap-preferred";
 
-        // (オプション) この時間内の素早い連続タップは、強制的にタップとして扱います。
-        // これにより、スペースキーやエンターキーの連続タップがより確実になります。
+            // (オプション) この時間内の素早い連続タップは、強制的にタップとして扱います。
+            // これにより、スペースキーやエンターキーの連続タップがより確実になります。
 
-        quick-tap-ms = <150>;
+            quick-tap-ms = <150>;
 
-        // --- ここまでがカスタマイズ項目です ---
+            // --- ここまでがカスタマイズ項目です ---
 
-        bindings = <&kp>, <&kp>;
+            bindings = <&kp>, <&kp>;
+        };
+
+        // Alt + ` マクロ (ALT_GRV) の定義
+        // 日本語入力のオンオフで、ChromeでAltキーが暴発するための対策マクロ
+
+        alt_grav_macro: alt_grav_macro {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            bindings =
+                <&macro_press>,
+                <&kp LALT>,
+                <&macro_tap>,
+                <&kp GRAVE>,
+                <&macro_release>,
+                <&kp LALT>;
+        };
     };
 
-    // Alt + ` マクロ (ALT_GRV) の定義
-    // 日本語入力のオンオフで、ChromeでAltキーが暴発するための対策マクロ
-
-    alt_grav_macro: alt_grav_macro {
-        compatible = "zmk,behavior-macro";
-        #binding-cells = <0>;
-        bindings =
-            <&macro_press>,
-            <&kp LALT>,
-            <&macro_tap>,
-            <&kp GRAVE>,
-            <&macro_release>,
-            <&kp LALT>;
+    macros {
     };
-};
 
     keymap {
         compatible = "zmk,keymap";
 
         default_layer {
             bindings = <
-&mt LGUI ESC   &kp SQT        &kp COMMA  &kp DOT             &kp P            &kp Y               &kp F         &kp G     &kp C                              &kp R      &kp L  &kp SLASH
-&mt LCTRL TAB  &kp A          &kp O      &mt LEFT_CONTROL E  &kp U            &kp I               &kp D         &kp H     &mt RIGHT_CONTROL T                &kp N      &kp S  &kp MINUS
-&kp LSHFT      &kp SEMICOLON  &kp Q      &kp J               &kp K            &kp X               &kp B         &kp M     &kp W                              &kp V      &kp Z  &kp RSHIFT
-&mo 3          &kp LCTRL      &kp LALT   &mt LALT BSPC       &mo 1            &mt LSHIFT SPACE    &mt RCTRL ENTER  &mo 2  &mt LALT TAB &kp RALT &kp RCTRL  &mo 3
+&mt LGUI ESC   &kp SQT        &kp COMMA  &kp DOT             &kp P  &kp Y               &kp F            &kp G  &kp C                &kp R     &kp L      &kp SLASH
+&mt LCTRL TAB  &kp A          &kp O      &mt LEFT_CONTROL E  &kp U  &kp I               &kp D            &kp H  &mt RIGHT_CONTROL T  &kp N     &kp S      &kp MINUS
+&kp LSHFT      &kp SEMICOLON  &kp Q      &kp J               &kp K  &kp X               &kp B            &kp M  &kp W                &kp V     &kp Z      &kp RSHIFT
+&mo 3          &kp LCTRL      &kp LALT   &mt LALT BSPC       &mo 1  &mt LSHIFT SPACE    &mt RCTRL ENTER  &mo 2  &mt LALT TAB         &kp RALT  &kp RCTRL  &mo 3
             >;
         };
 
@@ -67,10 +68,10 @@
 
         lower_layer {
             bindings = <
-&trans  &kp F1        &kp F2   &kp F3               &kp F4    &kp F5                   &trans           &kp HOME     &kp PAGE_DOWN    &kp PAGE_UP  &kp END    &trans
-&trans  &kp F6        &kp F7   &mt LEFT_CONTROL F8  &kp F9    &kp F10                  &alt_grav_macro  &kp LEFT     &kp DOWN         &kp UP       &kp RIGHT  &trans
-&trans  &kp F11       &kp F12  &kp PSCRN            &kp SLCK  &kp INS                  &trans           &trans       &trans           &trans       &trans     &trans
-&trans  &trans        &trans   &mt LALT DEL         &trans    &trans                   &trans           &trans       &trans           &trans       &trans     &trans
+&trans  &kp F1   &kp F2   &kp F3               &kp F4    &kp F5     &trans           &kp HOME  &kp PAGE_DOWN  &kp PAGE_UP  &kp END    &trans
+&trans  &kp F6   &kp F7   &mt LEFT_CONTROL F8  &kp F9    &kp F10    &alt_grav_macro  &kp LEFT  &kp DOWN       &kp UP       &kp RIGHT  &trans
+&trans  &kp F11  &kp F12  &kp PSCRN            &kp SLCK  &kp INS    &trans           &trans    &trans         &trans       &trans     &trans
+&trans  &trans   &trans   &mt LALT DEL         &trans    &trans     &trans           &trans    &trans         &trans       &trans     &trans
             >;
         };
 
@@ -78,10 +79,10 @@
 
         raise_layer {
             bindings = <
-&trans  &kp N1  &kp N2  &kp N3   &kp N4  &kp N5             &kp N6     &kp N7    &kp N8     &kp N9     &kp N0     &trans
-&trans  &none   &none   &kp ESC  &none   &kp TAB            &kp LBKT   &kp RBKT  &kp SLASH  &kp EQUAL  &kp MINUS  &trans
-&trans  &none   &none   &none    &none   &none              &kp GRAVE  &kp BSLH  &trans     &trans     &trans     &trans
-&trans  &trans  &trans  &trans   &trans  &trans             &trans     &trans    &trans     &trans     &trans     &trans
+&trans  &kp N1  &kp N2  &kp N3   &kp N4  &kp N5     &kp N6     &kp N7    &kp N8     &kp N9     &kp N0     &trans
+&trans  &none   &none   &kp ESC  &none   &kp TAB    &kp LBKT   &kp RBKT  &kp SLASH  &kp EQUAL  &kp MINUS  &trans
+&trans  &none   &none   &none    &none   &none      &kp GRAVE  &kp BSLH  &trans     &trans     &trans     &trans
+&trans  &trans  &trans  &trans   &trans  &trans     &trans     &trans    &trans     &trans     &trans     &trans
             >;
         };
 
@@ -89,10 +90,10 @@
 
         adjust_layer {
             bindings = <
-&bt BT_SEL 0    &bt BT_SEL 1  &bt BT_SEL 2  &bt BT_SEL 3    &bt BT_SEL 4  &bt BT_SEL 5              &bt BT_SEL 0  &bt BT_SEL 1    &bt BT_SEL 2  &bt BT_SEL 3  &bt BT_SEL 4  &bt BT_SEL 5
-&studio_unlock  &sys_reset    &none         &bt BT_CLR_ALL  &bt BT_CLR    &trans                    &none         &bt BT_CLR_ALL  &bt BT_CLR    &none         &none         &none         &sys_reset  &studio_unlock
-&none           &none         &none         &trans          &none         &none                     &none         &none           &none         &none         &none         &trans        &trans      &trans
-&trans          &trans        &trans        &trans          &trans        &trans                    &trans        &trans          &trans        &trans        &trans        &trans
+&bt BT_SEL 0    &bt BT_SEL 1  &bt BT_SEL 2  &bt BT_SEL 3    &bt BT_SEL 4  &bt BT_SEL 5    &bt BT_SEL 0  &bt BT_SEL 1  &bt BT_SEL 2    &bt BT_SEL 3  &bt BT_SEL 4  &bt BT_SEL 5
+&studio_unlock  &sys_reset    &none         &bt BT_CLR_ALL  &bt BT_CLR    &trans          &none         &bt BT_CLR    &bt BT_CLR_ALL  &none         &sys_reset    &studio_unlock
+&none           &none         &none         &none           &none         &trans          &none         &none         &none           &none         &none         &none
+&none           &trans        &trans        &trans          &trans        &bootloader     &bootloader   &trans        &trans          &trans        &trans        &trans
             >;
         };
     };
